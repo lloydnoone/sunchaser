@@ -3,11 +3,6 @@ import MapGL from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import axios from 'axios'
 
-// fetch('/api/closestsun')
-//   .then(res => res.json())
-//   .then(res => console.log(res))
-//   .catch(err => console.log(err))
-
 class Home extends React.Component {
   constructor() {
     super()
@@ -34,10 +29,8 @@ class Home extends React.Component {
   }
 
   addRouteLayers() {
-    console.log('Data inside addRouteLayers(): ', this.state.data)
     const map = this.reactMap.getMap()
-    //map.on('load', () => {
-    //add the GeoJSON layer here
+    console.log(this.state.data.routes[0].route_parts)
     this.state.data.routes[0].route_parts.map((part, i) => {
       return (
         map.addLayer({

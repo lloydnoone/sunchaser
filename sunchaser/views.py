@@ -1,8 +1,73 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+# pylint: disable=no-member
+import math
 import requests
 import geocoder
-import math
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.status import HTTP_201_CREATED, HTTP_422_UNPROCESSABLE_ENTITY, HTTP_204_NO_CONTENT
+from .models import Journey
+from .serializers import JourneySerializer, PopulatedJourneySerializer, CommentSerializer
+
+class JourneyListView(APIView):
+
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, _request):
+        journeys = Journey.objects.all()
+        serialized_journeys = PopulatedJourneySerializer(journeys, many=True)
+        return Response(serialized_journeys.data)
+
+    def post(self, request):
+        request.data['owner'] = request.user.id
+        journey = JourneySerializer(data=request.data)
+        if journey.is_valid():
+            journey.save()
+            return Response(journey.data, status=HTTP_201_CREATED)
+        return Response(journey.errors, status=HTTP_422_UNPROCESSABLE_ENTITY)
+
+class JourneyDetailView(APIView):
+
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, _request, pk):
+        journey = Journey.objects.get(pk=pk)
+        serialized_journey = PopulatedJourneySerializer(journey)
+        return Response(serialized_journey.data)
+
+    def put(self, request, pk):
+        request.data['owner'] = request.user.id
+        journey = Journey.objects.get(pk=pk)
+        updated_journey = JourneySerializer(journey, data=request.data)
+        if updated_journey.is_valid():
+            updated_journey.save()
+            return Response(updated_journey.data)
+        return Response(updated_journey.errors, status=HTTP_422_UNPROCESSABLE_ENTITY)
+
+    def delete(self, _request, pk):
+        journey = Journey.objects.get(pk=pk)
+        journey.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk):
+        return Response(request)
+
+
+class CommentListView(APIView):
+
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request, pk):
+        request.data['owner'] = request.user.id
+        request.data['journey'] = pk
+        comment = CommentSerializer(data=request.data)
+        if comment.is_valid():
+            comment.save()
+            journey = Journey.objects.get(pk=pk)
+            serialized_journey = PopulatedJourneySerializer(journey)
+            return Response(serialized_journey.data)
+        return Response(comment.errors, status=HTTP_422_UNPROCESSABLE_ENTITY)
 
 class ClosestSun(APIView):
 
@@ -11,7 +76,6 @@ class ClosestSun(APIView):
     def get(self, _request):
 
         ###############get closest sun################
-
         g = geocoder.ip('me')
         user_lat = g.latlng[0]
         user_long = g.latlng[1]
@@ -42,9 +106,7 @@ class ClosestSun(APIView):
         #response = requests.get('http://api.openweathermap.org/data/2.5/group?id=2646088,2657832,2653775&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_data = weather_response.json()
-        print('weather_data-------------->', weather_data)
         clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'light rain']
-        print('clearskies-------------->', clearskies)
         distance = 100
         closest_idx = None
         for idx, city in enumerate(clearskies):
@@ -52,7 +114,7 @@ class ClosestSun(APIView):
             lat_diff = abs(user_lat - city['coord']['lat'])#find dist in lat
             long_diff = abs(user_long - city['coord']['lon'])#find dist in long
             total_diff = lat_diff + long_diff #find total dist
-            print('City: ', city['name'],'total_diff: ', total_diff)
+            print('City: ', city['name'], 'total_diff: ', total_diff)
              #if lower than previous recorded distance record new
             if total_diff <= distance:
                 print('diff should be assigned. ')
@@ -60,7 +122,6 @@ class ClosestSun(APIView):
                 closest_idx = idx
 
         print('completed: ', distance)
-        
 
         #############Calculate the route#################
         ####transport API

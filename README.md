@@ -1,5 +1,10 @@
 # sunchaser
-sunchaser description
 
-caclulate route from curr pos to the sunny place
-show route on map
+add users
+user authentication
+
+the first user to accept the journey posts it
+when users accept it later they add themselves to that journey
+ 
+journey model (many to many)
+messages (one to many)
