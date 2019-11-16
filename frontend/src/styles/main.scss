@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css?family=Anton|Staatliches&display=swap'); //title on hame page
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap'); //default font
+
+//$navgreen: #2E933C;
+$bordergrey: #64403E;
+//$boxcolor: #81C14B;
+//$buttonbrown: #ECBA82;
+$footergreen: #204E4A;
+$tomatoRed: #932a26;
+$offWhite: rgb(248, 241, 241);
+
+@import "./general.scss";
+@import "./navbar.scss";
+@import "./forms.scss";
+

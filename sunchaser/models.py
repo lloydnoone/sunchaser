@@ -7,15 +7,21 @@ User = get_user_model()
 class Journey(models.Model):
     start = models.CharField(max_length=100)
     end = models.CharField(max_length=100)
-    owner = models.ForeignKey(
+    # owner = models.ForeignKey(
+    #     User,
+    #     related_name='journeys',
+    #     default='owner account deleted. ',
+    #     on_delete=models.DO_NOTHING
+    # )
+    users = models.ManyToManyField(
         User,
         related_name='journeys',
-        default='owner account deleted. ',
-        on_delete=models.DO_NOTHING
+        #on_delete=models.DO_NOTHING,
+        blank=True
     )
 
     def __str__(self):
-        return f'Post {self.id} - {self.owner}'
+        return f'Post {self.start} - {self.end}'
 
 class Comment(models.Model):
     text = models.CharField(max_length=300)

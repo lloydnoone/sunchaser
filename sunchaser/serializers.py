@@ -23,10 +23,10 @@ class JourneySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Journey
-        fields = ('id', 'start', 'end', 'owner', 'comments')
-        extra_kwargs = {'comments': {'required': False}}
+        fields = ('id', 'start', 'end', 'comments', 'users')#'owner',
+        extra_kwargs = {'comments': {'required': False}, 'users': {'required': False}}
 
 class PopulatedJourneySerializer(JourneySerializer):
 
-    owner = UserSerializer()
+    # owner = UserSerializer()
     comments = PopulatedCommentSerializer(many=True)

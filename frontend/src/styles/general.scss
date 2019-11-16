@@ -1,0 +1,62 @@
+* {
+  margin: 0;
+  border:0;
+  box-sizing: border-box;
+  font-family: 'IBM Plex Sans', sans-serif;
+  color: white;
+}
+
+a {
+  text-decoration: none;
+  //color: rgb(27, 14, 14);
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+button {
+  color: white;
+  background: black;
+  outline: none;
+  margin: 5px;
+  width: 120px;
+  //box-shadow: 1px 5px 25px 5px black;
+  box-shadow: 1px 2px 2px 2px black;
+	border-radius:5px;
+  border: solid white 2px;
+	display:inline-block;
+	cursor:pointer;
+  font-size: 18px;
+}
+
+button:hover {
+  background:linear-gradient(to bottom, $bordergrey 5%, $bordergrey 100%);
+  background-color:rgba(255, 255, 255, 0.5);
+}
+
+input {
+  border: none;
+  border-radius: 5px;
+  width: 96%;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 18px;
+  margin: 5px;
+  outline: none;
+}
+
+label {
+  margin-top: 10px;
+}
+
+.panelWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color:black;
+  margin: 20px;
+  padding: 20px;
+  width: 100%;
+  border-radius: 5px;
+  //border: solid 1px grey;
+  //box-shadow: 3px 4px 10px -1px $bordergrey;
+}

@@ -1,7 +1,8 @@
 import React from 'react'
-import MapGL from 'react-map-gl'
+//import MapGL from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import axios from 'axios'
+import Navbar from './Navbar'
 
 class Home extends React.Component {
   constructor() {
@@ -66,15 +67,19 @@ class Home extends React.Component {
   
   render() {
     return (
-      <MapGL
-        ref={(reactMap) => this.reactMap = reactMap}
-        mapStyle='mapbox://styles/mapbox/streets-v10'
-        mapboxApiAccessToken={'pk.eyJ1IjoibGxveWRub29uZSIsImEiOiJjazJ5cDdtNDcwNnB0M2NzMGE0cnVvMzM3In0.CWXt1hTNT_ZhbbOniB4QIA'}
-        {...this.state.viewport}
-        onViewportChange={(viewport) => this.setState({ viewport })}
-      />
+      <>
+        <Navbar/>
+      </>
     )
   }
 }
 
 export default Home
+
+/* <MapGL
+          ref={(reactMap) => this.reactMap = reactMap}
+          mapStyle='mapbox://styles/mapbox/streets-v10'
+          mapboxApiAccessToken={'pk.eyJ1IjoibGxveWRub29uZSIsImEiOiJjazJ5cDdtNDcwNnB0M2NzMGE0cnVvMzM3In0.CWXt1hTNT_ZhbbOniB4QIA'}
+          {...this.state.viewport}
+          onViewportChange={(viewport) => this.setState({ viewport })}
+        /> */

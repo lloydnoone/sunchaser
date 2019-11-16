@@ -1,0 +1,55 @@
+.formWrapper {
+  color: white;
+  display: flex;
+  justify-content: center;
+
+  .panelWrapper {
+    width: 30%;
+    min-width: 500px;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 1px 20px -10px black;
+  }
+  
+  button {
+    margin-left: auto;
+  }
+
+  small {
+    color: white;
+    padding: 10px;
+    text-decoration: underline;
+  }
+
+  input {
+    color: black;
+    margin: 5px 5px 10px 5px;
+    padding: 8px;
+  }
+
+  input::placeholder {
+    color: $bordergrey;
+    padding: 2px 5px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 17px;
+  }
+
+  input:focus {
+    box-shadow: 0 0 0 1px #2684ff;
+    border: 1px solid #2684ff;
+  }
+
+  h2 {
+    font-size: 45px;
+  }
+
+  label {
+    color: white;
+    font-size: 25px;
+    align-self: flex-start;
+    margin-top: 15px;
+    margin-left: 8px
+  }
+}

@@ -17,7 +17,9 @@ class RegisterView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'message': 'Registration Successful'})
+            user = User.objects.get(email=request.data.get('email')) #get the user thats was just created by the email just entered
+            token = jwt.encode({'sub': user.id}, settings.SECRET_KEY, algorithm='HS256') #encode a token same as login
+            return Response({'token': token, 'message': f'Registered and logged in! Welcome {user.username}'})
         return Response(serializer.errors, status=422)
 
 
@@ -51,5 +53,3 @@ class ProfileView(APIView):
         user = User.objects.get(pk=request.user.id)
         serialized_user = UserSerializer(user)
         return Response(serialized_user.data)
-
-
