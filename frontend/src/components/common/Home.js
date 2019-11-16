@@ -26,7 +26,7 @@ class Home extends React.Component {
         this.setState({ data: res.data })
       })
       .then(() => this.addRouteLayers())
-      .catch(err => this.setState({ errors: err.response.data.errors }))
+      .catch(err => this.setState(console.log('err in closestsun: ', err)))
   }
 
   addRouteLayers() {
@@ -62,7 +62,7 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    this.getAndSetLayerData()
+    //this.getAndSetLayerData()
   }
   
   render() {

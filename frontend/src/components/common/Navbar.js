@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import Auth from '../../lib/auth'
 import Register from '../auth/Register'
+import Login from '../auth/Login'
 
 class Navbar extends React.Component {
   constructor() {
@@ -42,6 +43,7 @@ class Navbar extends React.Component {
           </a>
         </nav>
         <Register/>
+        <Login/>
       </>
     )
   }

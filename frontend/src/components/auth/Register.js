@@ -28,15 +28,12 @@ class Register extends React.Component {
     axios.post('/api/register', this.state.data)
       .then((res) => {
         Auth.setToken(res.data.token)
-        this.props.history.goBack()
       })
-      .catch(err => this.setState({ errors: err.response.data.errors }))
+      .catch(err => this.setState(console.log('errors in register:', err)))
   }
 
   render() {
     console.log('render state Register', this.state)
-    console.log('render errors', this.state.errors)
-    const { errors } = this.state
     return (
       <div className='formWrapper'>
         <form className='panelWrapper' onSubmit={this.handleSubmit}>
@@ -45,14 +42,14 @@ class Register extends React.Component {
           <label>Username<span>*</span></label>
           <input
             name='username'
-            placeholder={errors.username ? 'This field is required.' : 'Username'}
+            placeholder='Username'
             onChange={this.handleChange}
           />
 
           <label>Email<span>*</span></label>
           <input
             name='email'
-            placeholder={errors.email ? 'This field is required.' : 'name@email.com'}
+            placeholder='name@email.com'
             onChange={this.handleChange}
           />
 
@@ -60,15 +57,15 @@ class Register extends React.Component {
           <input
             name='password'
             type='password'
-            placeholder={errors.password ? 'This field is required.' : 'Password'}
+            placeholder='Password'
             onChange={this.handleChange}
           />
 
           <label>Password Confirmation<span>*</span></label>
           <input
-            name='passwordConfirmation'
+            name='password_confirmation'
             type='password'
-            placeholder={errors.password ? 'This field is required.' : 'Password Confirmation'}
+            placeholder='Password Confirmation'
             onChange={this.handleChange}
           />
 
