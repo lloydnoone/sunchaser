@@ -1,14 +1,17 @@
 import React from 'react'
-//import MapGL from 'react-map-gl'
+import MapGL from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import axios from 'axios'
 import Navbar from './Navbar'
+import Directions from './Directions'
+import RouteOptions from './RouteOptions'
+import Auth from '../../lib/auth'
 
 class Home extends React.Component {
   constructor() {
     super()
     this.state = {
-      data: {},
+      routeData: {},
       viewport: {
         width: '100vw',
         height: '100vh',
@@ -23,16 +26,17 @@ class Home extends React.Component {
   getAndSetLayerData() {
     axios.get('/api/closestsun')
       .then(res => {
-        this.setState({ data: res.data })
+        this.setState({ routeData: res.data })
       })
       .then(() => this.addRouteLayers())
-      .catch(err => this.setState(console.log('err in closestsun: ', err)))
+      .catch(err => console.log('err in closestsun: ', err))
   }
 
   addRouteLayers() {
     const map = this.reactMap.getMap()
-    console.log(this.state.data.routes[0].route_parts)
-    this.state.data.routes[0].route_parts.map((part, i) => {
+    console.log(this.state.routeData)
+    console.log(this.state.routeData.routes[0].route_parts)
+    this.state.routeData.routes[0].route_parts.map((part, i) => {
       return (
         map.addLayer({
           'id': `${i}`,
@@ -62,13 +66,26 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    //this.getAndSetLayerData()
+    this.getAndSetLayerData()
   }
   
   render() {
     return (
       <>
         <Navbar/>
+        <MapGL
+          ref={(reactMap) => this.reactMap = reactMap}
+          mapStyle='mapbox://styles/mapbox/streets-v10'
+          mapboxApiAccessToken={'pk.eyJ1IjoibGxveWRub29uZSIsImEiOiJjazJ5cDdtNDcwNnB0M2NzMGE0cnVvMzM3In0.CWXt1hTNT_ZhbbOniB4QIA'}
+          {...this.state.viewport}
+          onViewportChange={(viewport) => this.setState({ viewport })}
+        /> 
+        {this.state.routeData.routes && 
+          <>
+            <Directions routeData={this.state.routeData}/>
+            {Auth.isAuthenticated() && <RouteOptions routeData={this.state.routeData}/>}
+          </>
+        }
       </>
     )
   }
@@ -76,10 +93,4 @@ class Home extends React.Component {
 
 export default Home
 
-/* <MapGL
-          ref={(reactMap) => this.reactMap = reactMap}
-          mapStyle='mapbox://styles/mapbox/streets-v10'
-          mapboxApiAccessToken={'pk.eyJ1IjoibGxveWRub29uZSIsImEiOiJjazJ5cDdtNDcwNnB0M2NzMGE0cnVvMzM3In0.CWXt1hTNT_ZhbbOniB4QIA'}
-          {...this.state.viewport}
-          onViewportChange={(viewport) => this.setState({ viewport })}
-        /> */
+  
