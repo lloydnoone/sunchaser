@@ -7,12 +7,6 @@ User = get_user_model()
 class Journey(models.Model):
     start = models.CharField(max_length=100)
     end = models.CharField(max_length=100)
-    # owner = models.ForeignKey(
-    #     User,
-    #     related_name='journeys',
-    #     default='owner account deleted. ',
-    #     on_delete=models.DO_NOTHING
-    # )
     users = models.ManyToManyField(
         User,
         related_name='journeys',

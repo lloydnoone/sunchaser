@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'profile_image')
+        fields = ('id', 'username')
 
 class CommentSerializer(serializers.ModelSerializer):
 
@@ -28,5 +28,18 @@ class JourneySerializer(serializers.ModelSerializer):
 
 class PopulatedJourneySerializer(JourneySerializer):
 
-    # owner = UserSerializer()
+    users = UserSerializer(many=True)
     comments = PopulatedCommentSerializer(many=True)
+
+    # def update(self, journey, data):
+    #     users_data = data.pop('users')
+    #     comments_data = data.pop('comments')
+
+    #     journey.name = data.get('start')
+    #     journey.end = data.get('end')
+
+    #     users = [User.objects.get(**user_data) for user_data in users_data]
+
+    #     journey.save()
+    #     journey.users.set(users)
+    #     return journey

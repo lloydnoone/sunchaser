@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.status import HTTP_201_CREATED, HTTP_422_UNPROCESSABLE_ENTITY, HTTP_204_NO_CONTENT
-from .models import Journey
+from rest_framework.status import HTTP_201_CREATED, HTTP_422_UNPROCESSABLE_ENTITY, HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED
+from .models import Journey, User, Comment
 from .serializers import JourneySerializer, PopulatedJourneySerializer, CommentSerializer
 
 class JourneyListView(APIView):
@@ -55,10 +55,11 @@ class JourneyDetailView(APIView):
         #request.data
         journey = Journey.objects.get(pk=pk) #get journey by pk
         original_journey = JourneySerializer(journey) #serialize the new data together with the old
-        original_journey.data['users'].append(request.user.id) #add current user into array
+        original_journey.data['users'].append(request.user.id) #({ 'id' : request.user.id, 'username' : request.user.username }) #add current user into array
         updated_journey = JourneySerializer(journey, data=original_journey.data) #serialize old with new data
         if updated_journey.is_valid():#check it
             updated_journey.save()#save to db
+            updated_journey = PopulatedJourneySerializer(updated_journey.instance) #pass an instance to circumvent is_valid
             return Response(updated_journey.data)
         return Response(updated_journey.errors, status=HTTP_422_UNPROCESSABLE_ENTITY)
 
@@ -66,15 +67,17 @@ class JourneySearchView(APIView): #view to get journey by start and end
 
     permission_classes = (IsAuthenticated, )
     def get(self, _request, start, end):
+        #use filter to get correct journey
+
         try:
-            journey = Journey.objects.get(start=start, end=end)
+            journey = Journey.objects.get(start=start, end__exact=end)
         except Journey.DoesNotExist:
+            print('error should be raised!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             raise PermissionDenied({'message': 'That Journey could not be found in search view. '})
 
-        serialized_journey = JourneySerializer(journey)
+        serialized_journey = PopulatedJourneySerializer(journey)
 
         return Response(serialized_journey.data)#serialized_journey.errors, status=HTTP_422_UNPROCESSABLE_ENTITY)
-
 
 
 class CommentListView(APIView):
@@ -91,6 +94,22 @@ class CommentListView(APIView):
             serialized_journey = PopulatedJourneySerializer(journey)
             return Response(serialized_journey.data)
         return Response(comment.errors, status=HTTP_422_UNPROCESSABLE_ENTITY)
+
+class CommentDetailView(APIView):
+
+    permission_classes = (IsAuthenticated, )
+
+    def delete(self, request, comment_pk, **kwargs):
+        comment = Comment.objects.get(pk=comment_pk) # find the comment by its id
+        # keep a reference to the jouney it was on
+        journey = Journey.objects.get(pk=comment.journey.id)
+        serialized_journey = PopulatedJourneySerializer(journey)
+
+        if comment.owner.id != request.user.id:
+            return Response(status=HTTP_401_UNAUTHORIZED)
+        comment.delete()
+        #return Response(status=HTTP_204_NO_CONTENT)
+        return Response(serialized_journey.data)
 
 class ClosestSun(APIView):
 
@@ -129,7 +148,7 @@ class ClosestSun(APIView):
         #response = requests.get('http://api.openweathermap.org/data/2.5/group?id=2646088,2657832,2653775&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_data = weather_response.json()
-        clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'light rain']
+        clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'clear sky']
         distance = 100
         closest_idx = None
         for idx, city in enumerate(clearskies):

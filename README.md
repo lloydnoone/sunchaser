@@ -1,4 +1,5 @@
 # sunchaser
 
-show users taking it
-comments on it
+render info after login
+
+style

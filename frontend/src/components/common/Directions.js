@@ -15,7 +15,7 @@ class Directions extends React.Component {
     if (part.mode === 'foot') {
       direction = `Walk to ${part.to_point_name}`
     } else {
-      if (part.mode === 'bus') direction = `Take the ${part.mode} to ${part.to_point_name}`
+      direction = `Take the ${part.mode} to ${part.to_point_name}`
     }
     return direction
   }
