@@ -1,16 +1,20 @@
 .formWrapper {
-  color: white;
+  color: $offWhite;
+  width: 100vw;
+  height: 50vw;
   display: flex;
   justify-content: center;
+  position: absolute;
+  z-index: 10;
 
   .panelWrapper {
-    width: 30%;
-    min-width: 500px;
-    max-width: 500px;
+    width: 500px;
+    height: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 1px 1px 20px -10px black;
+    margin: 40px;
   }
   
   button {
@@ -18,7 +22,7 @@
   }
 
   small {
-    color: white;
+    color: $offWhite;
     padding: 10px;
     text-decoration: underline;
   }
@@ -32,13 +36,13 @@
   input::placeholder {
     color: $bordergrey;
     padding: 2px 5px;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: $sunFont;
     font-size: 17px;
   }
 
   input:focus {
-    box-shadow: 0 0 0 1px #2684ff;
-    border: 1px solid #2684ff;
+    box-shadow: 0 0 0 1px $sunOrange;
+    border: 1px solid $sunOrange;
   }
 
   h2 {
@@ -46,7 +50,7 @@
   }
 
   label {
-    color: white;
+    color: $offWhite;
     font-size: 25px;
     align-self: flex-start;
     margin-top: 15px;

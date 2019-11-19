@@ -33,16 +33,18 @@ class UsersDisplay extends React.Component {
     console.log('users in UsersDisplay: ', this.state.users)
     return (
       <>
-        <div className='panelWrapper'>
-          <h2><span>{this.state.users.length}</span> users interested in this journey</h2>
-          {this.props.routeData &&
+        <div className='usersDisplayWrapper'>
+          <div className='panelWrapper'>
+            <h2><span>{this.state.users.length}</span> users interested in this journey</h2>
+            {this.props.routeData &&
               this.state.users.map((user, i) => (
                 <div className='userInfo' key={i}>
                   <p>{user.username}</p>
                 </div>
               ))
-          }
-          <button onClick={this.addUser}>Follow</button>
+            }
+            <button onClick={this.addUser}>Follow</button>
+          </div>
         </div>
       </>
     )

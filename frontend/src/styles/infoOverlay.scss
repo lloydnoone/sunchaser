@@ -1,0 +1,10 @@
+.infoOverlay {
+  width: 100vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+}

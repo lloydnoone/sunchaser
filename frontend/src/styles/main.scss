@@ -1,15 +1,38 @@
-@import url('https://fonts.googleapis.com/css?family=Anton|Staatliches&display=swap'); //title on hame page
-@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap'); //default font
+@import url('https://fonts.googleapis.com/css?family=Anton|Staatliches&display=swap');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
 
-//$navgreen: #2E933C;
 $bordergrey: #64403E;
-//$boxcolor: #81C14B;
-//$buttonbrown: #ECBA82;
-$footergreen: #204E4A;
-$tomatoRed: #932a26;
+$sunOrange: rgb(243, 119, 3);
+$darkOrange: rgba(243, 119, 3, 0.664);
+$sunYellow: #e2d523;
 $offWhite: rgb(248, 241, 241);
+$sunFont: 'IBM Plex Sans', sans-serif;
+
+$foot: #000000;
+$bus: rgba(243, 120, 4, 0.663);
+$train: #f37703;
+$Bakerloo: #996633;
+$Central:	#CC3333;
+$Circle: #FFCC00;
+$District: #006633;
+$HammersmithAndCity: #CC9999;
+$Jubilee: #868F98;
+$Metropolitan: #660066;
+$Northern: #000000;
+$Piccadilly: #000099;
+$Victoria: #0099CC;
+$WaterlooAndCity: #66CCCC;
+$DLR: #009999;
+$Overground: #FF6600;
+$Tramlink: #66CC00;
+$CableCar: #E21836;	
+$Crossrail: #7156A5;	
 
 @import "./general.scss";
 @import "./navbar.scss";
 @import "./forms.scss";
+@import "./directions.scss";
+@import "./map.scss";
+@import "./infoOverlay.scss";
+@import "./options.scss";
 

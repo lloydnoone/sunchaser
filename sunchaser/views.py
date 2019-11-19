@@ -148,22 +148,18 @@ class ClosestSun(APIView):
         #response = requests.get('http://api.openweathermap.org/data/2.5/group?id=2646088,2657832,2653775&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_data = weather_response.json()
-        clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'clear sky']
+        print('weather data --------------->', weather_data)
+        clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'scattered clouds']
         distance = 100
         closest_idx = None
         for idx, city in enumerate(clearskies):
-            print('previous distance: ', distance)
             lat_diff = abs(user_lat - city['coord']['lat'])#find dist in lat
             long_diff = abs(user_long - city['coord']['lon'])#find dist in long
             total_diff = lat_diff + long_diff #find total dist
-            print('City: ', city['name'], 'total_diff: ', total_diff)
              #if lower than previous recorded distance record new
             if total_diff <= distance:
-                print('diff should be assigned. ')
                 distance = total_diff
                 closest_idx = idx
-
-        print('completed: ', distance)
 
         #############Calculate the route#################
         ####transport API

@@ -24,6 +24,7 @@ class Directions extends React.Component {
     return (
       <>
         {this.props.routeData.routes[0] &&
+        <div className='directionsWrapper'>
           <div className='panelWrapper'>
             <h2>Directions</h2>
             {this.props.routeData.routes[0].route_parts.map((part, i) => (        
@@ -32,6 +33,7 @@ class Directions extends React.Component {
               </div>
             ))}
           </div>
+        </div>
         }
       </>
     )

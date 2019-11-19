@@ -6,6 +6,11 @@
   color: white;
 }
 
+main {
+  height: 100vh;
+  background: black;
+}
+
 a {
   text-decoration: none;
   //color: rgb(27, 14, 14);
@@ -57,6 +62,5 @@ label {
   padding: 20px;
   width: 100%;
   border-radius: 5px;
-  //border: solid 1px grey;
-  //box-shadow: 3px 4px 10px -1px $bordergrey;
+  box-shadow: 14px 9px 54px 0px rgba(231,166,26,0.98);
 }

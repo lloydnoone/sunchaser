@@ -47,6 +47,7 @@ class Navbar extends React.Component {
       .then(res => {
         Auth.setToken(res.data.token)
         this.toggleFormDisplay()
+        this.props.saveJourney()
       })
       .catch(err => console.log('error in login: ', err))
     
@@ -65,14 +66,13 @@ class Navbar extends React.Component {
       .then((res) => {
         Auth.setToken(res.data.token)
         this.toggleFormDisplay(formType)
+        this.props.saveJourney()
       })
       .catch(err => console.log('errors in register:', err))
     
   }
 
   toggleFormDisplay(formType) {
-    console.log('formType: ', formType)
-    console.log('regDisplay: ', this.state.regDisplay)
     formType === 'register' && !this.state.regDisplay ? this.setState({ regDisplay: true, loginDisplay: false }).then() : this.setState({ regDisplay: false, loginDisplay: false })
     formType === 'login' && !this.state.loginDisplay ? this.setState({ loginDisplay: true, regDisplay: false }) : this.setState({ regDisplay: false, loginDisplay: false })
   }
@@ -82,20 +82,25 @@ class Navbar extends React.Component {
     return (
       <>
         <nav className={`${this.state.burgerOpen ? 'burgerOpen' : ''}`}>
-          <div>
+          <div className='topRow'>
+            <div className='logo'>
+              <h1>SunChaser</h1>
+            </div>
+            <a
+              className="burgerMenu"
+              onClick={this.toggleNavbar}
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+          <div className='navOptions'>
             <Link to="/">Home</Link>
             {!Auth.isAuthenticated() && <a onClick={() => this.toggleFormDisplay('register')}>Register</a>}
             {!Auth.isAuthenticated() && <a onClick={() => this.toggleFormDisplay('login')}>Sign in</a>}
             {Auth.isAuthenticated() && <a onClick={this.handleLogout}>Logout</a>}
           </div>
-          <a 
-            className="burgerMenu"
-            onClick={this.toggleNavbar}
-          >
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
         </nav>
         {this.state.regDisplay && <Register onChange={this.handleRegisterChange} onSubmit={(e) => this.handleRegisterSubmit(e, 'register')}/>}
         {this.state.loginDisplay && <Login onChange={this.handleLoginChange} onSubmit={this.handleLoginSubmit}/>}
