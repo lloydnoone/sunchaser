@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import auth from '../../lib/auth'
+import Auth from '../../lib/auth'
 
 class Comments extends React.Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class Comments extends React.Component {
     e.preventDefault()
     const journeyId = this.props.savedJourney.id
     axios.delete(`/api/journeys/${journeyId}/comments/${commentId}`, {
-      headers: { Authorization: `Bearer ${auth.getToken()}` }
+      headers: { Authorization: `Bearer ${Auth.getToken()}` }
     })
       .then((res) => {
         console.log('comments: ', res.data.comments)
@@ -33,7 +33,7 @@ class Comments extends React.Component {
     e.preventDefault()
     const journeyId = this.props.savedJourney.id
     axios.post(`/api/journeys/${journeyId}/comments/`, { text: this.state.text }, {
-      headers: { Authorization: `Bearer ${auth.getToken()}` }
+      headers: { Authorization: `Bearer ${Auth.getToken()}` }
     })
       .then((res) => { 
         const commentsArr = [...res.data.comments]
@@ -46,21 +46,22 @@ class Comments extends React.Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  isOwner() {
-    return true //auth.getPayload().sub === this.props.savedJourney.user.id
+  isOwner(comment) {
+    return Auth.getPayload().sub === comment.owner.id
   }
 
   render() {
-    console.log('user in comments: ', this.props.savedJourney.users)
     return (
       <>
         {this.state.comments && this.state.comments.map(comment => (
           <div className='panelWrapper' key={comment.id}>
             <div>{comment.text}</div>
-            {this.isOwner() && <button onClick={(e) => this.handleDeleteComment(e, comment.id)}>delete</button>}
+            {comment && 
+            this.isOwner(comment) &&
+             <button onClick={(e) => this.handleDeleteComment(e, comment.id)}>delete</button>
+            }
           </div>
         ))}
-        {this.isOwner() && 
           <form className='panelWrapper' onSubmit={this.handleSubmitComment}>
             <textarea
               rows='4'
@@ -73,7 +74,6 @@ class Comments extends React.Component {
             />
             <button type='submit'>Add comment</button>
           </form>
-        }
       </>
     )
   }

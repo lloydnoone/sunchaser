@@ -28,6 +28,7 @@ class Navbar extends React.Component {
   handleLogout() {
     Auth.logout()
     this.setState({ loggedIn: false })
+    this.props.setLogoutFlag()
   }
 
   toggleNavbar() {
@@ -84,7 +85,7 @@ class Navbar extends React.Component {
         <nav className={`${this.state.burgerOpen ? 'burgerOpen' : ''}`}>
           <div className='topRow'>
             <div className='logo'>
-              <h1>SunChaser</h1>
+              <h1>SunChaser</h1><div></div>
             </div>
             <a
               className="burgerMenu"

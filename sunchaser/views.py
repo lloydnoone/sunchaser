@@ -67,14 +67,17 @@ class JourneySearchView(APIView): #view to get journey by start and end
 
     permission_classes = (IsAuthenticated, )
     def get(self, _request, start, end):
-        #use filter to get correct journey
-
-        try:
-            journey = Journey.objects.get(start=start, end__exact=end)
-        except Journey.DoesNotExist:
-            print('error should be raised!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            raise PermissionDenied({'message': 'That Journey could not be found in search view. '})
-
+        print('start', start)
+        print('end', end)
+        # try:
+        journey = Journey.objects.get(end__iexact=end)
+            # print('journey: ------------------->', journey)
+            #journey = Journey.objects.get(start=start, end=end)
+    #     except Journey.DoesNotExist:
+    #         print('error should be raised!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    #         raise PermissionDenied({'message': 'That Journey could not be found in search view. '})
+    #    # if not journey:
+    #         #raise PermissionDenied({'message': 'That Journey could not be found in search view. '})
         serialized_journey = PopulatedJourneySerializer(journey)
 
         return Response(serialized_journey.data)#serialized_journey.errors, status=HTTP_422_UNPROCESSABLE_ENTITY)
@@ -148,7 +151,6 @@ class ClosestSun(APIView):
         #response = requests.get('http://api.openweathermap.org/data/2.5/group?id=2646088,2657832,2653775&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_data = weather_response.json()
-        print('weather data --------------->', weather_data)
         clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'scattered clouds']
         distance = 100
         closest_idx = None

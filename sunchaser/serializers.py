@@ -30,7 +30,6 @@ class PopulatedJourneySerializer(JourneySerializer):
 
     users = UserSerializer(many=True)
     comments = PopulatedCommentSerializer(many=True)
-
     # def update(self, journey, data):
     #     users_data = data.pop('users')
     #     comments_data = data.pop('comments')

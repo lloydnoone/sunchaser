@@ -18,6 +18,7 @@ class Home extends React.Component {
       routeData: {},
       savedJourney: {},
       journeyId: null,
+      logout: true,
       viewport: {
         width: '100vw',
         height: '90vh',
@@ -29,6 +30,7 @@ class Home extends React.Component {
     this.addRouteLayers = this.addRouteLayers.bind(this)
     this.saveJourney = this.saveJourney.bind(this)
     this.resizeMap = this.resizeMap.bind(this)
+    this.setLogoutFlag = this.setLogoutFlag.bind(this)
   }
 
   initJourney() {
@@ -46,7 +48,7 @@ class Home extends React.Component {
     console.log(this.state.routeData)
     console.log(this.state.routeData.routes[0].route_parts)
     const modeColor = {
-      foot: '#000000',
+      foot: '#fa7d5e',
       bus: 'rgba(243, 120, 4, 0.663)',
       train: '#f37703',
       tube: '#e2d523',
@@ -102,9 +104,9 @@ class Home extends React.Component {
 
   saveJourney() {
     //get route start and end from routeData
-    const start = this.state.routeData.routes[0].route_parts[0].from_point_name.replace(/ /gi,'+')
+    const start = this.state.routeData.routes[0].route_parts[0].from_point_name.replace(/ |(|)/gi,'')
     const idx = this.state.routeData.routes[0].route_parts.length - 1
-    const end = this.state.routeData.routes[0].route_parts[idx].to_point_name.replace(/ /gi,'+')
+    const end = this.state.routeData.routes[0].route_parts[idx].to_point_name.replace(/ |(|)/gi,'')
     if (Auth.isAuthenticated()) { // dont save or create journeys if not logged in
       //attempt to fetch from db
       axios.get(`/api/journeys/${start}&${end}/`, { headers: { Authorization: `Bearer ${Auth.getToken()}` } })
@@ -128,11 +130,15 @@ class Home extends React.Component {
   resizeMap() {
     if (this.reactMap) console.log('map should resize. ')
   }
+
+  setLogoutFlag() {
+    this.setState({ logout: !this.state.logout })
+  }
   
   render() {
     return (
       <>
-        <Navbar saveJourney={this.saveJourney}/>
+        <Navbar saveJourney={this.saveJourney} setLogoutFlag={this.setLogoutFlag}/>
         <div className='mapWrapper'>
           <MapGL
             ref={(reactMap) => this.reactMap = reactMap}
@@ -148,7 +154,7 @@ class Home extends React.Component {
           {this.state.routeData.routes && 
             <>
               <Directions routeData={this.state.routeData} />
-              <LandingMessage/>
+              {!Auth.isAuthenticated() && <LandingMessage/>}
             </>
           }
           {this.state.journeyId &&
