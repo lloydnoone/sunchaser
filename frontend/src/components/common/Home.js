@@ -8,6 +8,7 @@ import Directions from './Directions'
 import UsersDisplay from './UsersDisplay'
 import Comments from './Comments'
 import LandingMessage from './LandingMessage'
+import LoadingScreen from './LoadingScreen'
 
 import Auth from '../../lib/auth'
 
@@ -104,9 +105,9 @@ class Home extends React.Component {
 
   saveJourney() {
     //get route start and end from routeData
-    const start = this.state.routeData.routes[0].route_parts[0].from_point_name.replace(/ |(|)/gi,'')
+    const start = this.state.routeData.routes[0].route_parts[0].from_point_name.replace(/[ |(|)|/&-]/gi,'')
     const idx = this.state.routeData.routes[0].route_parts.length - 1
-    const end = this.state.routeData.routes[0].route_parts[idx].to_point_name.replace(/ |(|)/gi,'')
+    const end = this.state.routeData.routes[0].route_parts[idx].to_point_name.replace(/[ |(|)|/&-]/gi,'')
     if (Auth.isAuthenticated()) { // dont save or create journeys if not logged in
       //attempt to fetch from db
       axios.get(`/api/journeys/${start}&${end}/`, { headers: { Authorization: `Bearer ${Auth.getToken()}` } })
@@ -151,6 +152,7 @@ class Home extends React.Component {
           /> 
         </div>  
         <div className={'infoOverlay'}>
+          {!this.state.routeData.routes && <LoadingScreen/>}
           {this.state.routeData.routes && 
             <>
               <Directions routeData={this.state.routeData} />

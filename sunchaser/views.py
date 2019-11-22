@@ -151,7 +151,8 @@ class ClosestSun(APIView):
         #response = requests.get('http://api.openweathermap.org/data/2.5/group?id=2646088,2657832,2653775&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid=68744f08950db8e051f0bc70de642369')
         weather_data = weather_response.json()
-        clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'scattered clouds']
+        print('weather data-------------------->: ', weather_data)
+        clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'light rain' or 'clear skies' or 'scattered clouds']
         distance = 100
         closest_idx = None
         for idx, city in enumerate(clearskies):
