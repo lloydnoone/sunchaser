@@ -16,6 +16,7 @@ psycopg2 = "*"
 requests = "*"
 jwt = "*"
 psycopg2-binary = "*"
+geocoder = "*"
 
 [requires]
 python_version = "3.7"
