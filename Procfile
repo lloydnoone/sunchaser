@@ -1,2 +1,2 @@
 release: python manage.py migrate --noinput
-web: gunicorn sunchaser.wsgi --log-file -
+web: gunicorn sun-chaser.wsgi --log-file -
