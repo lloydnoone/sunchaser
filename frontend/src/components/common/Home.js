@@ -20,6 +20,7 @@ class Home extends React.Component {
       savedJourney: {},
       journeyId: null,
       logout: true,
+      formVisible: false,
       viewport: {
         width: '100vw',
         height: '90vh',
@@ -32,6 +33,7 @@ class Home extends React.Component {
     this.saveJourney = this.saveJourney.bind(this)
     this.resizeMap = this.resizeMap.bind(this)
     this.setLogoutFlag = this.setLogoutFlag.bind(this)
+    this.setFormVisibleFlag = this.setFormVisibleFlag.bind(this)
   }
 
   initJourney() {
@@ -135,11 +137,15 @@ class Home extends React.Component {
   setLogoutFlag() {
     this.setState({ logout: !this.state.logout })
   }
+
+  setFormVisibleFlag(bool) {
+    this.setState({ formVisible: bool })
+  }
   
   render() {
     return (
       <>
-        <Navbar saveJourney={this.saveJourney} setLogoutFlag={this.setLogoutFlag}/>
+        <Navbar saveJourney={this.saveJourney} setLogoutFlag={this.setLogoutFlag} setFormVisibleFlag={this.setFormVisibleFlag}/>
         <div className='mapWrapper'>
           <MapGL
             ref={(reactMap) => this.reactMap = reactMap}
@@ -151,6 +157,7 @@ class Home extends React.Component {
             onResize={this.resizeMap}
           /> 
         </div>  
+        { !this.state.formVisible &&
         <div className={'infoOverlay'}>
           {!this.state.routeData.routes && <LoadingScreen/>}
           {this.state.routeData.routes && 
@@ -170,6 +177,7 @@ class Home extends React.Component {
             </>
           }
         </div>
+        }
       </>
     )
   }

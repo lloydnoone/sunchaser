@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 import Auth from '../../lib/auth'
 import Register from '../auth/Register'
@@ -74,8 +74,21 @@ class Navbar extends React.Component {
   }
 
   toggleFormDisplay(formType) {
-    formType === 'register' && !this.state.regDisplay ? this.setState({ regDisplay: true, loginDisplay: false }).then() : this.setState({ regDisplay: false, loginDisplay: false })
-    formType === 'login' && !this.state.loginDisplay ? this.setState({ loginDisplay: true, regDisplay: false }) : this.setState({ regDisplay: false, loginDisplay: false })
+    if (formType === 'register' && !this.state.regDisplay) {
+      this.setState({ regDisplay: true, loginDisplay: false }).then()
+      this.props.setFormVisibleFlag(true)
+    } else {
+      this.setState({ regDisplay: false, loginDisplay: false })
+      this.props.setFormVisibleFlag(false)
+    }
+
+    if (formType === 'login' && !this.state.loginDisplay) {
+      this.setState({ loginDisplay: true, regDisplay: false })
+      this.props.setFormVisibleFlag(true)
+    } else {
+      this.setState({ regDisplay: false, loginDisplay: false })
+      this.props.setFormVisibleFlag(false)
+    }
   }
 
   render() {
@@ -97,7 +110,6 @@ class Navbar extends React.Component {
             </a>
           </div>
           <div className='navOptions'>
-            <Link to="/">Home</Link>
             {!Auth.isAuthenticated() && <a onClick={() => this.toggleFormDisplay('register')}>Register</a>}
             {!Auth.isAuthenticated() && <a onClick={() => this.toggleFormDisplay('login')}>Sign in</a>}
             {Auth.isAuthenticated() && <a onClick={this.handleLogout}>Logout</a>}

@@ -1,5 +1,8 @@
 # pylint: disable=no-member
 import math
+import os
+from dotenv import load_dotenv
+
 import requests
 import geocoder
 
@@ -10,7 +13,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.status import HTTP_201_CREATED, HTTP_422_UNPROCESSABLE_ENTITY, HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED
 from .models import Journey, User, Comment
 from .serializers import JourneySerializer, PopulatedJourneySerializer, CommentSerializer
-
+load_dotenv()
 class JourneyListView(APIView):
 
     permission_classes = (IsAuthenticated, )
@@ -116,16 +119,12 @@ class CommentDetailView(APIView):
 
 class ClosestSun(APIView):
 
-#&appid=68744f08950db8e051f0bc70de642369
-
     def get(self, _request):
 
         ###############get closest sun################
         g = geocoder.ip('me')
         user_lat = g.latlng[0]
         user_long = g.latlng[1]
-        print('user_lat: ', user_lat)
-        print('user_long: ', user_long)
 
         country_codes = {
             'inverness'   :'2646088',
@@ -147,11 +146,9 @@ class ClosestSun(APIView):
             'plymouth'    :'3333181'
         }
         joinedCodes = ','.join(str(x) for x in country_codes.values())
-        # response = requests.get('https://api.darksky.net/forecast/f3c493fadeeb15c55b63a9f2412d4428/42.3601,-71.0589')
-        #response = requests.get('http://api.openweathermap.org/data/2.5/group?id=2646088,2657832,2653775&units=metric&appid=68744f08950db8e051f0bc70de642369')
-        weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid=68744f08950db8e051f0bc70de642369')
+        OWKey = os.getenv('OWKEY')
+        weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid={OWKey}')
         weather_data = weather_response.json()
-        print('weather data-------------------->: ', weather_data)
         clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'light rain' or 'clear skies' or 'scattered clouds']
         distance = 100
         closest_idx = None
@@ -165,17 +162,13 @@ class ClosestSun(APIView):
                 closest_idx = idx
 
         #############Calculate the route#################
-        ####transport API
-        ####App ID: 526bec4c
-        ####Key cbd41eac203131882ea38c624e4ae84d
-
-        ####from lonlat:lonlat:-0.1257,51.5085
-        ####to lonlat:lonlat:-2.94,54.9
 
         from_crd = f"lonlat:{user_long},{user_lat}"
         to_crd = f"lonlat:{clearskies[closest_idx]['coord']['lon']},{clearskies[closest_idx]['coord']['lat']}"
 
-        route_response = requests.get(f'https://transportapi.com/v3/uk/public/journey/from/{from_crd}/to/{to_crd}.json?app_id=526bec4c&app_key=cbd41eac203131882ea38c624e4ae84d&service=southeast')
+        TPKey = os.getenv('TPKEY')
+        TPId = os.getenv('TPID')
+        route_response = requests.get(f'https://transportapi.com/v3/uk/public/journey/from/{from_crd}/to/{to_crd}.json?app_id={TPId}&app_key={TPKey}&service=southeast')
         route_data = route_response.json()
 
         return Response(route_data)
