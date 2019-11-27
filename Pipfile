@@ -18,6 +18,7 @@ jwt = "*"
 psycopg2-binary = "*"
 geocoder = "*"
 gunicorn = "*"
+whitenoise = "*"
 
 [requires]
 python_version = "3.7"
