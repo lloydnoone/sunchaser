@@ -39,6 +39,7 @@ class Home extends React.Component {
   initJourney() {
     axios.get('/api/closestsun')
       .then(res => {
+        console.log('data in closestsun req---------------------->', res.data)
         this.setState({ routeData: res.data })
       })
       .then(() => this.addRouteLayers())
@@ -48,7 +49,7 @@ class Home extends React.Component {
 
   addRouteLayers() {
     const map = this.reactMap.getMap()
-    console.log(this.state.routeData)
+    console.log('route_data------->', this.state.routeData)
     console.log(this.state.routeData.routes[0].route_parts)
     const modeColor = {
       foot: '#fa7d5e',

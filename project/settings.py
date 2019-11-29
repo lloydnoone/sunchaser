@@ -31,7 +31,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = False
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = ['sun-chaser.herokuapp.com']
+ALLOWED_HOSTS = ['sun-chaser.herokuapp.com', 'localhost']
 
 
 # Application definition

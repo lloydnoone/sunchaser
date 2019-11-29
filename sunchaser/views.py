@@ -123,8 +123,10 @@ class ClosestSun(APIView):
 
         ###############get closest sun################
         g = geocoder.ip('me')
-        user_lat = g.latlng[0]
-        user_long = g.latlng[1]
+        user_lat = 51.5176 #g.latlng[0]
+        user_long = -0.1145 #g.latlng[1]
+
+        print('user_coords-------------->', user_lat, user_long)
 
         country_codes = {
             'inverness'   :'2646088',
@@ -149,6 +151,7 @@ class ClosestSun(APIView):
         OWKey = os.getenv('OWKEY')
         weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid={OWKey}')
         weather_data = weather_response.json()
+        print('weather_data----------------->', weather_data)
         clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'light rain' or 'clear skies' or 'scattered clouds']
         distance = 100
         closest_idx = None
@@ -170,5 +173,5 @@ class ClosestSun(APIView):
         TPId = os.getenv('TPID')
         route_response = requests.get(f'https://transportapi.com/v3/uk/public/journey/from/{from_crd}/to/{to_crd}.json?app_id={TPId}&app_key={TPKey}&service=southeast')
         route_data = route_response.json()
-
+        print('route_data------------------------>', route_data)
         return Response(route_data)
