@@ -4,7 +4,7 @@
 
 ![image](https://user-images.githubusercontent.com/49749612/65820099-0528ce00-e21d-11e9-8ff8-f82e195a6171.png)
 
-This was a project assigned to me by General Assembly during a software enginerring immersive course. The purpose of the project was to solidify the skills we learnt in the first 4 weeks by putting them to use in a project of our choice.
+This was a project assigned to me by General Assembly during a software engineering immersive course. The purpose of the project was to solidify the skills we learnt in the first 4 weeks by putting them to use in a project of our choice.
 
 It is a pacman clone in which i attempted to recreate the original games logic using common web development technologies.
 
@@ -98,13 +98,25 @@ moveAmount(newIdx) {
 
 Upon eating all the pips, the player wins and is moved on to the next level. The stage is the same but the ghosts will now be moving faster. the ghosts speed will increase everytime the stage is cleared. 
 
-## Challenges and future improvements
+## Wins and Blockers
 
-The main challenge of the project was to create a ghost AI that was similair to the original pacman. I recreated this in much the same way by giving the ghosts the ability to change targe tiles depending on which mode they are in. 
+The main challenge in this project was to get all the information we need by making correct API calls in an efficient way. 
 
-The part where i spent the most time and had the most difficulty was organizing the timers and intervals which control these states. They switch back and forth and are interupted by the frightened state and should resume where they left off. The functions handling this are complicated and need refactoring somehow.
+The part where i spent the most time and had the most difficulty was correctly mapping though nested objects and arrays in which, each level of nested data could also be an object or array.  
 
-The main future improvement for the project would be to expand on the level editor that i created for my own convenience. It would be a great idea to make this more user friendly and accesible to users. This would give a whole new feature where players could make there own stages for the game and save them.
+A big win for me on this project was getting experience pair coding with somebody else. It was a new experience for me. My fears were proved wrong and me and Chawit both agree that we worked very well together and we are both more than happy with the end result.
+
+## Future Features
+
+The main future improvement for the project would be moslty styling. the way the filtered result of city and cuisine is displayed to the user is not great. I would change this to a scrollable dropdown list and aim or something that more closely resembles the Zomato website. Some of the code should be refactored into seperate components.
+
+## Key Learnings
+
+With less than 48hrs time management was again, a big factor in this project. In order to make use of the time as effectively as we could, division of labour was important and things like coordinating our breaks helped. 
+
+We used a screen sharing plugin for vscode to imporve productivity but hand problems when both trying to contribute at the same time. It was buggy and we ended up with a lot of confusion when working with the same file and sometimes even when working in seperate files. 
+
+It was also my first experience working with public APIs. I realised the importance of choosing the correct API by looking at popularity, quality of documentation and whether it was suitable for our needs. I also gained experience in drilling down into multiple nested fields of objects and arrays in order to get what we need from the JSON.
 
 ![](leveleditor.gif)
 
