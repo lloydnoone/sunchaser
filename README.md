@@ -1,7 +1,5 @@
 ![ga_cog_large_red_rgb](https://cloud.githubusercontent.com/assets/40461/8183776/469f976e-1432-11e5-8199-6ac91363302b.png)
 
-# SunChaser
-
 ![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.28.39.png?raw=true)
 
 This the final project assigned to me by General Assembly during a software engineering immersive course. The purpose of the project was to apply the basic usage of python with the django framework on the backend of a full stack app.
@@ -96,7 +94,6 @@ class ClosestSun(APIView):
         route_data = route_response.json()
         return Response(route_data)
 ```
-![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.30.52.png?raw=true)
 
 ## Wins and Blockers
 
@@ -106,6 +103,8 @@ The part where i spent the most time and had the most difficulty working with th
 
 A big win for me then was to increase my confidence in databases and backend.
 
+![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.30.52.png?raw=true)
+
 ## Future Features
 
 I would have liked to add more options for the user in generating the journey. For example taking temperature into account or calculate a route to drive rather than take public transport. The time constraints forced me to cut back on these features. On the front end, validation needs improving and some bug fixing is needed.
@@ -113,8 +112,6 @@ I would have liked to add more options for the user in generating the journey. F
 ## Key Learnings
 
 As mentioned earlier, the main learning experience for me was getting more comfortable with databases and backend. Other than that i realised that picking up another language and framework is not as big of a problem as i thought. Most of the concepts from javascript applied to python and the same for backend in general so the project was not as difficult as i was anticipating.
-
-![](leveleditor.gif)
 
 ## Author 
 
