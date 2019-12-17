@@ -4,119 +4,110 @@
 
 ![image](https://user-images.githubusercontent.com/49749612/65820099-0528ce00-e21d-11e9-8ff8-f82e195a6171.png)
 
-This was a project assigned to me by General Assembly during a software engineering immersive course. The purpose of the project was to solidify the skills we learnt in the first 4 weeks by putting them to use in a project of our choice.
+This the final project assigned to me by General Assembly during a software engineering immersive course. The purpose of the project was to apply the basic usage of python with the django framework on the backend of a full stack app.
 
-It is a pacman clone in which i attempted to recreate the original games logic using common web development technologies.
+The app calculates a route using public transport to the closest city in the uk that has clear skies. Users can then express interest in taking the journey and see other users who have done so and communicate.
 
 ## Built With
 
 1. HTML5
 2. CSS3
 3. JavaScript
+4. React
+5. Python
+6. Django rest framework
 4. GitHub
 
 ## Deployment
 
-The game is deployed on GitHub pages and it can be found here- https://lloydnoone.github.io/pacman-clone/
+The app is deployed on Heroku and it can be found here- http://sun-chaser.herokuapp.com/
 
 ## Getting Started
 
-Use the clone button to download the game source code. Open the index.html file in your browser and the game should start, if not check console for any issues. The assets used in this game are stored in the assets folder. They inlcude gifs, png files and fonts.
+When the app loads it will automatically calculate a route using public transport to the closest city in the uk with clear skies. Once loaded, you can then register or login to express interest in the route, comment on it and see other users and their comments.
 
-## Game Architecture
+## How It Works
 
-The goal in pacman is for the player to collect all the pips to complete the level. While doing this the player has to avoid ghosts. if the ghosts catch the player it is game over.
+The app uses 3 APIs, openweather, geocoder, and transportation API. When the page is loaded, the users latitude and longtitude is found using geocoder. A call to openweather API finds the weather conditions for 17 major cities around the UK. Moslty on the coast. Those cities are then filtered down to cities with clear skies. The distance of the cities is calculated by finding the total difference in latitude and longtitude in each and then finding the city that is the least distance away.
 
-![](ezgif.com-video-to-gif.gif)
+The users location and the location of that city is then used in a call to transportation API which is then calculates the route using public transport between the two. This route is then displayed on the map. That route, if it doesnt already exist in the database from a previous search is saved to the database along with interested users and their comments that are attached to it.
 
-The ghosts have 3 modes of movement. 
+![image](https://github.com/lloydnoone/cigarreviews/blob/master/Screenshot%202019-10-22%20at%2021.07.04.png?raw=true)
 
-* Chase
-  > In chase the ghosts target pacman by comapring their postion to pacmans position on the gameboard in a staight line. This means they sometimes go the wrong way and is an intentional part of the game mechanics.
-  
-* scatter
-  > In scatter, the ghosts will go to there respective corner and circle around until after a few seconds they put back in chase mode.
-  
-* frightened 
-  > firghtened mode is activated when pacman eats the larger energizer dots. In this mode the ghosts take random turns and      move more slowly. This gives pacman a chance to chase down the ghosts and eat them for extra points.
-  
-A timer changes the ghosts from chase to scatter. because of this the ghosts attack in waves. The time remaining in each mode is remembered during frightened mode so that they go back to there previous state and carry on where they left off.
-
-an example of the ghosts movement function-
+Below is the code that handles the main logic of getting the data, filtering it and returning it to the front end.
 
 ```javascript
-moveAmount(newIdx) {
-      //remove cssClass from this cell before moving
-      cells[this.ghostIdx].classList.remove(this.cssClass)
-      //save reference to check next move
-      this.previousIdx = this.ghostIdx
-      // move the actual index by amount passed in
-      this.ghostIdx = newIdx
-      //place cssClass on new cell
-      cells[this.ghostIdx].classList.add(this.cssClass)
-    }
-    checkNextIdx(nextIdx) {
-      //check for wall and previous index
-      return (cells[nextIdx].classList.contains('wall') === false && cells.indexOf(cells[nextIdx]) !== this.previousIdx)
-    }
-    checkTunnelMove() {
-      if (this.ghostIdx === 200) {
-        cells[this.ghostIdx].classList.remove(this.cssClass)
-        this.ghostIdx = 218
-        this.previousIdx = 219
-      }
-      if (this.ghostIdx === 219) {
-        cells[this.ghostIdx].classList.remove(this.cssClass)
-        this. ghostIdx = 201
-        this.previousIdx = 200
-      }
-    }
-    moveCloser() {
-      //if ghost on the edge tile of a tunnel, transfer to other side
-      this.checkTunnelMove()
-      //get player and ghost coords
-      const targetX = cells[this.targetIdx].getBoundingClientRect().left
-      const ghostX = cells[this.ghostIdx].getBoundingClientRect().left
-      const targetY = cells[this.targetIdx].getBoundingClientRect().top
-      const ghostY = cells[this.ghostIdx].getBoundingClientRect().top
-      // check up, if there is no wall and not previous position, move there
-      if (this.checkNextIdx(this.ghostIdx - width) && ghostY > targetY) {
-        //move up
-        this.moveAmount(this.ghostIdx - width)
-      } else if (this.checkNextIdx(this.ghostIdx + width) && ghostY < targetY) {
-        //check down, if poss move there
-        this.moveAmount(this.ghostIdx + width)
-      } else if (this.checkNextIdx(this.ghostIdx - 1) && ghostX > targetX) {
-        //check left, if poss move there
-        this.moveAmount(this.ghostIdx - 1)
-      } else if (this.checkNextIdx(this.ghostIdx + 1) && ghostX < targetX) {
-        //check left, if poss move there
-        this.moveAmount(this.ghostIdx + 1)
-      }
-    }
-```
+class ClosestSun(APIView):
 
-Upon eating all the pips, the player wins and is moved on to the next level. The stage is the same but the ghosts will now be moving faster. the ghosts speed will increase everytime the stage is cleared. 
+    def get(self, _request):
+
+        ###############get closest sun################
+        g = geocoder.ip('me')
+        user_lat = g.latlng[0]
+        user_long = g.latlng[1]
+
+        country_codes = {
+            'inverness'   :'2646088',
+            'aberdeen'    :'2657832',
+            'glasgow'     :'2648579',
+            'carlisle'    :'2653775',
+            'newcastle'   :'3333174',
+            'liverpool'   :'3333167',
+            'leeds'       :'3333164',
+            'aberystwyth' :'7292321',
+            'cardiff'     :'2653822',
+            'sheffield'   :'3333193',
+            'oxford'      :'7290621',
+            'cambridge'   :'7290660',
+            'norwich'     :'7290598',
+            'canterbury'  :'7290598',
+            'brighton'    :'3333133',
+            'bournemouth' :'3333129',
+            'plymouth'    :'3333181'
+        }
+        joinedCodes = ','.join(str(x) for x in country_codes.values())
+        OWKey = os.getenv('OWKEY')
+        weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid={OWKey}')
+        weather_data = weather_response.json()
+        clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'clear skies']
+        distance = 100
+        closest_idx = None
+        for idx, city in enumerate(clearskies):
+            lat_diff = abs(user_lat - city['coord']['lat'])#find dist in lat
+            long_diff = abs(user_long - city['coord']['lon'])#find dist in long
+            total_diff = lat_diff + long_diff #find total dist
+             #if lower than previous recorded distance record new
+            if total_diff <= distance:
+                distance = total_diff
+                closest_idx = idx
+
+        #############Calculate the route#################
+
+        from_crd = f"lonlat:{user_long},{user_lat}"
+        to_crd = f"lonlat:{clearskies[closest_idx]['coord']['lon']},{clearskies[closest_idx]['coord']['lat']}"
+
+        TPKey = os.getenv('TPKEY')
+        TPId = os.getenv('TPID')
+        route_response = requests.get(f'https://transportapi.com/v3/uk/public/journey/from/{from_crd}/to/{to_crd}.json?app_id={TPId}&app_key={TPKey}&service=southeast')
+        route_data = route_response.json()
+        return Response(route_data)
+```
 
 ## Wins and Blockers
 
-The main challenge in this project was to get all the information we need by making correct API calls in an efficient way. 
+The main challenge in this project was to get to grips with python and django in a short space of time before making the app. It was a lot to take in at once and really tested my ability to quickly pick up a new technology and get to grips with the documentation.
 
-The part where i spent the most time and had the most difficulty was correctly mapping though nested objects and arrays in which, each level of nested data could also be an object or array.  
+The part where i spent the most time and had the most difficulty working with the serializers and models for the database. Throughout the course i constantly felt like databases were a weakness of mine. I was happy to have the opportunitiy to once again make a full stack app on my own in order to get more comfortable with it. By the end of this project i was a lot more confident with creating models and backend in general. 
 
-A big win for me on this project was getting experience pair coding with somebody else. It was a new experience for me. My fears were proved wrong and me and Chawit both agree that we worked very well together and we are both more than happy with the end result.
+A big win for me then was to increase my confidence in databases and backend.
 
 ## Future Features
 
-The main future improvement for the project would be moslty styling. the way the filtered result of city and cuisine is displayed to the user is not great. I would change this to a scrollable dropdown list and aim or something that more closely resembles the Zomato website. Some of the code should be refactored into seperate components.
+I would have liked to add more options for the user in generating the journey. For example taking temperature into account or calculate a route to drive rather than take public transport. The time constraints forced me to cut back on these features. On the front end, validation needs improving and some bug fixing is needed.
 
 ## Key Learnings
 
-With less than 48hrs time management was again, a big factor in this project. In order to make use of the time as effectively as we could, division of labour was important and things like coordinating our breaks helped. 
-
-We used a screen sharing plugin for vscode to imporve productivity but hand problems when both trying to contribute at the same time. It was buggy and we ended up with a lot of confusion when working with the same file and sometimes even when working in seperate files. 
-
-It was also my first experience working with public APIs. I realised the importance of choosing the correct API by looking at popularity, quality of documentation and whether it was suitable for our needs. I also gained experience in drilling down into multiple nested fields of objects and arrays in order to get what we need from the JSON.
+As mentioned earlier, the main learning experience for me was getting more comfortable with databases and backend. Other than that i realised that picking up another language and framework is not as big of a problem as i thought. Most of the concepts from javascript applied to python and the same for backend in general so the project was not as difficult as i was anticipating.
 
 ![](leveleditor.gif)
 
