@@ -1,12 +1,14 @@
 ![ga_cog_large_red_rgb](https://cloud.githubusercontent.com/assets/40461/8183776/469f976e-1432-11e5-8199-6ac91363302b.png)
 
-# pacman-clone
+# SunChaser
 
-![image](https://user-images.githubusercontent.com/49749612/65820099-0528ce00-e21d-11e9-8ff8-f82e195a6171.png)
+![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.28.39.png?raw=true)
 
 This the final project assigned to me by General Assembly during a software engineering immersive course. The purpose of the project was to apply the basic usage of python with the django framework on the backend of a full stack app.
 
 The app calculates a route using public transport to the closest city in the uk that has clear skies. Users can then express interest in taking the journey and see other users who have done so and communicate.
+
+![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.27.47.png?raw=true)
 
 ## Built With
 
@@ -26,13 +28,15 @@ The app is deployed on Heroku and it can be found here- http://sun-chaser.heroku
 
 When the app loads it will automatically calculate a route using public transport to the closest city in the uk with clear skies. Once loaded, you can then register or login to express interest in the route, comment on it and see other users and their comments.
 
+![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.28.53.png?raw=true)
+
 ## How It Works
 
 The app uses 3 APIs, openweather, geocoder, and transportation API. When the page is loaded, the users latitude and longtitude is found using geocoder. A call to openweather API finds the weather conditions for 17 major cities around the UK. Moslty on the coast. Those cities are then filtered down to cities with clear skies. The distance of the cities is calculated by finding the total difference in latitude and longtitude in each and then finding the city that is the least distance away.
 
 The users location and the location of that city is then used in a call to transportation API which is then calculates the route using public transport between the two. This route is then displayed on the map. That route, if it doesnt already exist in the database from a previous search is saved to the database along with interested users and their comments that are attached to it.
 
-![image](https://github.com/lloydnoone/cigarreviews/blob/master/Screenshot%202019-10-22%20at%2021.07.04.png?raw=true)
+![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.29.14.png?raw=true)
 
 Below is the code that handles the main logic of getting the data, filtering it and returning it to the front end.
 
@@ -92,6 +96,7 @@ class ClosestSun(APIView):
         route_data = route_response.json()
         return Response(route_data)
 ```
+![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.30.52.png?raw=true)
 
 ## Wins and Blockers
 
