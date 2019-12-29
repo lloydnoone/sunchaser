@@ -2,7 +2,7 @@
 
 ![image](https://github.com/lloydnoone/sunchaser/blob/master/Screenshot%202019-12-17%20at%2012.28.39.png?raw=true)
 
-This the final project assigned to me by General Assembly during a software engineering immersive course. The purpose of the project was to apply the basic usage of python with the django framework on the backend of a full stack app.
+This was the final project assigned to me by General Assembly during a software engineering immersive course. The purpose of the project was to apply the basic usage of python with the django framework on the backend of a full stack app.
 
 The app calculates a route using public transport to the closest city in the uk that has clear skies. Users can then express interest in taking the journey and see other users who have done so and communicate.
 
