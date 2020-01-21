@@ -125,8 +125,6 @@ class ClosestSun(APIView):
         user_lat = g.latlng[0]
         user_long = g.latlng[1]
 
-        print('user_coords-------------->', user_lat, user_long)
-
         country_codes = {
             'inverness'   :'2646088',
             'aberdeen'    :'2657832',
@@ -150,20 +148,14 @@ class ClosestSun(APIView):
         OWKey = os.getenv('OWKEY')
         weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid={OWKey}')
         weather_data = weather_response.json()
-        print('weather_data----------------->', weather_data['list'][0]['weather'])
         destination = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'clear sky' or 'scattered clouds']
-        print(type(weather_data))
-        print(destination)
         # if destination is undefined then filter weather data for highest temp instead
         sun_found = True # boolean to send as part of data to front end
-        print('length---------->', len(destination))
         if len(destination) is 0:
-            print('inside warmest temp')
             sun_found = False
             closest_idx = 0 # already found the warmest city
             # filter for highest temp
             destination = sorted(weather_data['list'], key=lambda city: city['main']['temp'], reverse=True)
-            print('destination ----------------->', destination)
         else:
             #find closest city
             distance = 100
@@ -178,14 +170,14 @@ class ClosestSun(APIView):
                     closest_idx = idx
 
         #############Calculate the route#################
-        print('closest_idx--------------->', closest_idx)
-        print('lon should be----------------->', destination[0]['coord']['lon'])
         from_crd = f"lonlat:{user_long},{user_lat}"
         to_crd = f"lonlat:{destination[closest_idx]['coord']['lon']},{destination[closest_idx]['coord']['lat']}"
 
-        TPKey = os.getenv('TPKEY')
-        TPId = os.getenv('TPID')
+        TPKey = 'cbd41eac203131882ea38c624e4ae84d' #os.getenv('TPKEY')
+        TPId = '526bec4c'#os.getenv('TPID')
         route_response = requests.get(f'https://transportapi.com/v3/uk/public/journey/from/{from_crd}/to/{to_crd}.json?app_id={TPId}&app_key={TPKey}&service=southeast')
         route_data = route_response.json()
+        
         route_data['sun_found'] = sun_found # add the sun found boolean to response
+        print('route data after add sun_found------------------->', route_data)
         return Response(route_data)
