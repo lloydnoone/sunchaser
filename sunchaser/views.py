@@ -1,5 +1,5 @@
 # pylint: disable=no-member
-import math
+#import math
 import os
 from dotenv import load_dotenv
 
@@ -9,9 +9,9 @@ import geocoder
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
+#from rest_framework.exceptions import PermissionDenied
 from rest_framework.status import HTTP_201_CREATED, HTTP_422_UNPROCESSABLE_ENTITY, HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED
-from .models import Journey, User, Comment
+from .models import Journey, Comment
 from .serializers import JourneySerializer, PopulatedJourneySerializer, CommentSerializer
 load_dotenv()
 class JourneyListView(APIView):
@@ -72,7 +72,6 @@ class JourneySearchView(APIView): #view to get journey by start and end
     def get(self, _request, start, end):
         print('start', start)
         print('end', end)
-        # try:
         journey = Journey.objects.get(end__iexact=end)
             # print('journey: ------------------->', journey)
             #journey = Journey.objects.get(start=start, end=end)
@@ -123,8 +122,8 @@ class ClosestSun(APIView):
 
         ###############get closest sun################
         g = geocoder.ip('me')
-        user_lat = 51.5176 #g.latlng[0]
-        user_long = -0.1145 #g.latlng[1]
+        user_lat = g.latlng[0]
+        user_long = g.latlng[1]
 
         print('user_coords-------------->', user_lat, user_long)
 
@@ -151,27 +150,42 @@ class ClosestSun(APIView):
         OWKey = os.getenv('OWKEY')
         weather_response = requests.get(f'http://api.openweathermap.org/data/2.5/group?id={joinedCodes}&units=metric&appid={OWKey}')
         weather_data = weather_response.json()
-        print('weather_data----------------->', weather_data)
-        clearskies = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'light rain' or 'clear skies' or 'scattered clouds']
-        distance = 100
-        closest_idx = None
-        for idx, city in enumerate(clearskies):
-            lat_diff = abs(user_lat - city['coord']['lat'])#find dist in lat
-            long_diff = abs(user_long - city['coord']['lon'])#find dist in long
-            total_diff = lat_diff + long_diff #find total dist
-             #if lower than previous recorded distance record new
-            if total_diff <= distance:
-                distance = total_diff
-                closest_idx = idx
+        print('weather_data----------------->', weather_data['list'][0]['weather'])
+        destination = [city for city in weather_data['list'] if city['weather'][0]['description'] == 'clear sky' or 'scattered clouds']
+        print(type(weather_data))
+        print(destination)
+        # if destination is undefined then filter weather data for highest temp instead
+        sun_found = True # boolean to send as part of data to front end
+        print('length---------->', len(destination))
+        if len(destination) is 0:
+            print('inside warmest temp')
+            sun_found = False
+            closest_idx = 0 # already found the warmest city
+            # filter for highest temp
+            destination = sorted(weather_data['list'], key=lambda city: city['main']['temp'], reverse=True)
+            print('destination ----------------->', destination)
+        else:
+            #find closest city
+            distance = 100
+            closest_idx = None
+            for idx, city in enumerate(destination):
+                lat_diff = abs(user_lat - city['coord']['lat'])#find dist in lat
+                long_diff = abs(user_long - city['coord']['lon'])#find dist in long
+                total_diff = lat_diff + long_diff #find total dist
+                #if lower than previous recorded distance record new
+                if total_diff <= distance:
+                    distance = total_diff
+                    closest_idx = idx
 
         #############Calculate the route#################
-
+        print('closest_idx--------------->', closest_idx)
+        print('lon should be----------------->', destination[0]['coord']['lon'])
         from_crd = f"lonlat:{user_long},{user_lat}"
-        to_crd = f"lonlat:{clearskies[closest_idx]['coord']['lon']},{clearskies[closest_idx]['coord']['lat']}"
+        to_crd = f"lonlat:{destination[closest_idx]['coord']['lon']},{destination[closest_idx]['coord']['lat']}"
 
         TPKey = os.getenv('TPKEY')
         TPId = os.getenv('TPID')
         route_response = requests.get(f'https://transportapi.com/v3/uk/public/journey/from/{from_crd}/to/{to_crd}.json?app_id={TPId}&app_key={TPKey}&service=southeast')
         route_data = route_response.json()
-        print('route_data------------------------>', route_data)
+        route_data['sun_found'] = sun_found # add the sun found boolean to response
         return Response(route_data)

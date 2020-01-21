@@ -70,6 +70,7 @@ class Home extends React.Component {
       DLR: '#009999',
       Overground: '#FF6600',
       Tramlink: '#66CC00',
+      tram: '#66CC00',
       CableCar: '#E21836',
       Crossrail: '#7156A'
     }
